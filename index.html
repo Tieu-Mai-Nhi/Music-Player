@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
-</head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <body>
     <div class="player">
 
@@ -20,12 +20,12 @@
             <!-- header -->
             <header>
                 <h4>Now playing:</h4>
-                <h2>Noi vong tay lon</h2>
+                <h2>Viva la vida</h2>
             </header>
 
             <!-- CD -->
             <div class="cd">
-                <div class="cd-thumb" style = "background-image: url('./assets/img/background.jpg/cover')">
+                <div class="cd-thumb" style = "background-image: url('./assets/img/background.jpg'); background-position: center">
                 </div>
             </div>
 
@@ -53,24 +53,13 @@
                 </div>
             </div>
 
-            <input id="" type="range" value="0" step="1" min="0" max="100">
+            <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
 
             <audio id="audio" src=""></audio>
         </div>
 
         <!-- Playlist -->
         <div class="playlist">
-            <div class="song">
-                <div class="thumb" style="background-image: url(./assets/img/background.jpg)">
-                </div>
-                <div class="body">
-                    <h3 class="title">Music name</h3>
-                    <p class="author">Singer</p>
-                </div>
-                <div class="option">
-                    <i class="fa-solid fa-ellipsis"></i>
-                </div>
-            </div>
         </div>
     </div>
 
