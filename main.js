@@ -79,6 +79,7 @@ const app = {
     currentIndex: 0,
     songs : songs,
     isPlaying :false,
+    isRandom :false,
     render: function() { // 1. Render song
         const htmls = this.songs.map(song => {
             return ` 
@@ -160,13 +161,33 @@ const app = {
 
         // Xử lý khi next bài hát
         nextBtn.onclick = function() {
-            _this.nextSong();
+            if (_this.isRandom) {
+                _this.randomSong()
+            } else {
+                _this.nextSong()
+            }
             audio.play();
         }
 
         // Xử lý khi prev bài hát
         prevBtn.onclick = function() {
-            _this.prevSong();
+            if (_this.isRandom) {
+                _this.randomSong()
+            } else {
+                _this.prevSong()
+            }
+            audio.play();
+        }
+
+        // Xử lý random bật tắt 
+        randomBtn.onclick = function() {
+            _this.isRandom = !_this.isRandom
+            randomBtn.classList.toggle('active', _this.isRandom);
+        }
+
+        // Xử lý khi phát lại bài hát
+        repeatBtn.onclick = function() {
+            _this.repeatSong();
             audio.play();
         }
     },   
@@ -202,6 +223,19 @@ const app = {
         this.loadCurrentSong();
     },
 
+    randomSong: function() {
+        let newIndex;
+        do {
+            newIndex = Math.floor(Math.random() * this.songs.length);
+        } while (newIndex === this.currentIndex) 
+        
+        this.currentIndex = newIndex;
+        this.loadCurrentSong(); 
+    },
+
+    repeatSong: function() {
+        this.loadCurrentSong();
+    },
     
 
     // hàm tổng 
