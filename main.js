@@ -67,6 +67,8 @@ const audio = document.querySelector('#audio');
 const cd = document.querySelector('.cd');   
 const player = document.querySelector('.player');
 const playBtn = document.querySelector('.btn-toggle-play');
+
+const progress = document.querySelector('#progress');
 const app = {
     currentIndex: 0,
     songs : songs,
@@ -124,6 +126,21 @@ const app = {
             _this.isPlaying = false;
             player.classList.remove('playing');
         }   
+
+        // Khi tiến độ bài hát thay đổi
+        audio.ontimeupdate = function() {
+            if (audio.duration) {
+                const progressPercent = audio.currentTime / audio.duration * 100;
+                progress.value = progressPercent;
+            } 
+            ;
+        }
+
+        // Xử lý khi tua bài hát
+        progress.onchange = function(e) {
+            const seekTime = audio.duration / 100 * e.target.value;
+            audio.currentTime = seekTime;
+        }
     },   
 
     // tìm vị trí current song
@@ -140,6 +157,9 @@ const app = {
         cdThumb.style.backgroundImage = `url'${this.currentSong.image}'`
         audio.src = this.currentSong.path;
     },
+
+
+    
 
     // hàm tổng 
     start: function() {
