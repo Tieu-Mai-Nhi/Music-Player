@@ -59,49 +59,107 @@ const songs = [
 // 8. Active song 
 // 9. Scroll active song into view 
 // 10. Play song when click 
-$(document).ready(function() {  
-    const app = {
-        songs : songs,
-        render: function() {
-            const htmls = this.songs.map(song => {
-                return ` 
-                    <div class="song">
-                        <div class="thumb" style="background-image: url('${song.image}')">
-                        </div>
-                        <div class="body">
-                            <h3 class="title">${song.name}</h3>
-                            <p class="author">${song.singer}</p>
-                        </div>
-                        <div class="option">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </div>
-                    </div>`
-            })
-            //  
-            $('.playlist').html(htmls.join('')) ;
-        },
-        
-        handleEvents: function() {
-            const cd = document.querySelector('.cd');   
-            const cdWidth = cd.offsetWidth;
-            document.onscroll = function() {
-                const scrollTop = window.scrollY || document.documentElement.scrollTop
-                const newWidth = cdWidth - scrollTop;
-                // console.log(newWidth);
-                cd.style.width = newWidth > 0 ? newWidth + 'px' : 0 ;
-                cd.style.opacity = newWidth / cdWidth;
-            }
-        },
 
-        start: function() {
-            this.handleEvents();
-
-            this.render();
+const heading = document.querySelector('header h2');
+const cdThumb = document.querySelector('.cd-thumb');
+const audio = document.querySelector('#audio');
+// console.log(heading, cdThumb, audio); 
+const cd = document.querySelector('.cd');   
+const player = document.querySelector('.player');
+const playBtn = document.querySelector('.btn-toggle-play');
+const app = {
+    currentIndex: 0,
+    songs : songs,
+    isPlaying :false,
+    render: function() { // 1. Render song
+        const htmls = this.songs.map(song => {
+            return ` 
+                <div class="song">
+                    <div class="thumb" style="background-image: url('${song.image}')">
+                    </div>
+                    <div class="body">
+                        <h3 class="title">${song.name}</h3>
+                        <p class="author">${song.singer}</p>
+                    </div>
+                    <div class="option">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </div>
+                </div>`
+        })
+        // console.log(htmls);
+        document.querySelector('.playlist').innerHTML = htmls.join('');
+    },
+    
+    // Scroll top
+    handleEvents: function() {
+        const cdWidth = cd.offsetWidth;
+        const _this = this;
+        // Xử lý phóng to/thu nhỏ CD
+        document.onscroll = function() {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop
+            const newWidth = cdWidth - scrollTop;
+            // console.log(newWidth);
+            cd.style.width = newWidth > 0 ? newWidth + 'px' : 0 ;
+            cd.style.opacity = newWidth / cdWidth;
         }
-    }
-    app.start()
-});
 
-// Scroll top
+        // Xử lý khi click Play
+        playBtn.onclick = function() {
+            if(_this.isPlaying) {
+                audio.pause();
+            } else {
+                audio.play();
+            };
+        }
+    
+
+        // Lắng nghe Sự kiện khi song được play
+        audio.onplay = function() {
+            _this.isPlaying = true;
+            player.classList.add('playing');
+        }
+
+         // Lắng nghe Sự kiện khi song được play
+         audio.onpause = function() {
+            _this.isPlaying = false;
+            player.classList.remove('playing');
+        }   
+    },   
+
+    // tìm vị trí current song
+    defineProperties: function() {
+        Object.defineProperty(this, 'currentSong', {
+            get: function() {
+                return this.songs[this.currentIndex]
+            }
+        })
+    },
+
+    loadCurrentSong: function() {
+        heading.textContent = this.currentSong.name;
+        cdThumb.style.backgroundImage = `url'${this.currentSong.image}'`
+        audio.src = this.currentSong.path;
+    },
+
+    // hàm tổng 
+    start: function() {
+        // Định nghĩa các thuộc tính cho obj
+        this.defineProperties();
+
+        // Lắng nghe, xử lý các sự kiện DOM events
+        this.handleEvents();
+
+        // Tải thông tin bài hát đầu tiên vào UI khi chạy app
+        this.loadCurrentSong();
+
+        // Render playlist
+        this.render();
+    }
+}
+    app.start()
+
+// 3. Play/pause/seek
+
+
 
 
