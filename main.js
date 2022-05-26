@@ -114,17 +114,28 @@ const app = {
             };
         }
     
+        // Xử lý CD quay và dừng
+        const cdThumbAnimate = cdThumb.animate([
+            { transform: 'rotate(360deg)'}
+        ], {
+                duration: 10000, //10s speed
+                iterations: Infinity
+            })
+            console.log(cdThumbAnimate);
+            cdThumbAnimate.pause();
 
         // Lắng nghe Sự kiện khi song được play
         audio.onplay = function() {
             _this.isPlaying = true;
             player.classList.add('playing');
+            cdThumbAnimate.play();
         }
 
-         // Lắng nghe Sự kiện khi song được play
+         // Lắng nghe Sự kiện khi song được pause
          audio.onpause = function() {
             _this.isPlaying = false;
             player.classList.remove('playing');
+            cdThumbAnimate.pause();
         }   
 
         // Khi tiến độ bài hát thay đổi
