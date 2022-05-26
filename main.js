@@ -68,6 +68,12 @@ const cd = document.querySelector('.cd');
 const player = document.querySelector('.player');
 const playBtn = document.querySelector('.btn-toggle-play');
 
+const nextBtn = document.querySelector('.btn-next');
+const prevBtn = document.querySelector('.btn-prev');
+
+const randomBtn = document.querySelector('.btn-random');
+const repeatBtn = document.querySelector('.btn-repeat');
+
 const progress = document.querySelector('#progress');
 const app = {
     currentIndex: 0,
@@ -132,7 +138,7 @@ const app = {
         }
 
          // Lắng nghe Sự kiện khi song được pause
-         audio.onpause = function() {
+        audio.onpause = function() {
             _this.isPlaying = false;
             player.classList.remove('playing');
             cdThumbAnimate.pause();
@@ -144,13 +150,24 @@ const app = {
                 const progressPercent = audio.currentTime / audio.duration * 100;
                 progress.value = progressPercent;
             } 
-            ;
         }
 
         // Xử lý khi tua bài hát
         progress.onchange = function(e) {
             const seekTime = audio.duration / 100 * e.target.value;
             audio.currentTime = seekTime;
+        }
+
+        // Xử lý khi next bài hát
+        nextBtn.onclick = function() {
+            _this.nextSong();
+            audio.play();
+        }
+
+        // Xử lý khi prev bài hát
+        prevBtn.onclick = function() {
+            _this.prevSong();
+            audio.play();
         }
     },   
 
@@ -165,10 +182,25 @@ const app = {
 
     loadCurrentSong: function() {
         heading.textContent = this.currentSong.name;
-        cdThumb.style.backgroundImage = `url'${this.currentSong.image}'`
+        cdThumb.style.backgroundImage = `url('${this.currentSong.image}')`;
         audio.src = this.currentSong.path;
     },
+    
+    nextSong: function() {
+        this.currentIndex++;
+        if (this.currentIndex >= this.songs.length) {
+            this.currentIndex = 0
+        };
+        this.loadCurrentSong();
+    },
 
+    prevSong: function() {
+        this.currentIndex--;
+        if (this.currentIndex < 0) {
+            this.currentIndex = this.songs.length - 1;
+        };
+        this.loadCurrentSong();
+    },
 
     
 
