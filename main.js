@@ -81,9 +81,9 @@ const app = {
     isPlaying :false,
     isRandom :false,
     render: function() { // 1. Render song
-        const htmls = this.songs.map(song => {
+        const htmls = this.songs.map((song, index) => {
             return ` 
-                <div class="song">
+                <div class="song ${index === this.currentIndex ? 'active' : ''}">
                     <div class="thumb" style="background-image: url('${song.image}')">
                     </div>
                     <div class="body">
@@ -167,6 +167,7 @@ const app = {
                 _this.nextSong()
             }
             audio.play();
+            _this.render();
         }
 
         // Xử lý khi prev bài hát
@@ -177,13 +178,20 @@ const app = {
                 _this.prevSong()
             }
             audio.play();
+            _this.render();
         }
 
         // Xử lý random bật tắt 
         randomBtn.onclick = function() {
-            _this.isRandom = !_this.isRandom
-            randomBtn.classList.toggle('active', _this.isRandom);
+            _this.isRandom = !_this.isRandom 
+            randomBtn.classList.toggle('active', _this.isRandom); // thêm class active
         }
+
+        // Xử lý next song khi audio ended
+        audio.onended = function() {
+            nextBtn.click();
+        } 
+
 
         // Xử lý khi phát lại bài hát
         repeatBtn.onclick = function() {
@@ -226,7 +234,7 @@ const app = {
     randomSong: function() {
         let newIndex;
         do {
-            newIndex = Math.floor(Math.random() * this.songs.length);
+            newIndex = Math.floor(Math.random() * this.songs.length);   // tránh trùng bài hát có index hiện tại
         } while (newIndex === this.currentIndex) 
         
         this.currentIndex = newIndex;
