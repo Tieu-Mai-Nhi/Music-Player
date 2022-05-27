@@ -60,6 +60,8 @@ const songs = [
 // 9. Scroll active song into view 
 // 10. Play song when click 
 
+const $ = document.querySelector.bind(document);
+
 const heading = document.querySelector('header h2');
 const cdThumb = document.querySelector('.cd-thumb');
 const audio = document.querySelector('#audio');
@@ -75,6 +77,8 @@ const randomBtn = document.querySelector('.btn-random');
 const repeatBtn = document.querySelector('.btn-repeat');
 
 const progress = document.querySelector('#progress');
+
+
 const app = {
     currentIndex: 0,
     songs : songs,
@@ -99,7 +103,6 @@ const app = {
         document.querySelector('.playlist').innerHTML = htmls.join('');
     },
     
-    // Scroll top
     handleEvents: function() {
         const cdWidth = cd.offsetWidth;
         const _this = this;
@@ -168,6 +171,7 @@ const app = {
             }
             audio.play();
             _this.render();
+            _this.scrollToActiveSong();
         }
 
         // Xử lý khi prev bài hát
@@ -179,6 +183,7 @@ const app = {
             }
             audio.play();
             _this.render();
+            _this.scrollToActiveSong();
         }
 
         // Xử lý random bật tắt 
@@ -245,6 +250,23 @@ const app = {
         this.loadCurrentSong();
     },
     
+    scrollToActiveSong: function() {
+        setTimeout(() => {
+            const songActive = document.querySelector('.song.active')
+            if (this.currentIndex === 0 || 1) {
+                songActive.scrollIntoView({
+                    behavior: "smooth", 
+                    block: "center", 
+                })
+            } else {
+                songActive.scrollIntoView({
+                    behavior: "smooth", 
+                    block: "nearest", 
+                })
+            }
+            
+        }, 300) 
+    },
 
     // hàm tổng 
     start: function() {
