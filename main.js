@@ -86,6 +86,7 @@ const app = {
     songs : songs,
     isPlaying :false,
     isRandom :false,
+    isRepeat: false,
     render: function() { // 1. Render song
         const htmls = this.songs.map((song, index) => {
             return ` 
@@ -128,7 +129,7 @@ const app = {
     
         // Xử lý CD quay và dừng
         const cdThumbAnimate = cdThumb.animate([
-            { transform: 'rotate(360deg)'}
+            {transform: 'rotate(360deg)'}
         ], {
                 duration: 10000, //10s speed
                 iterations: Infinity
@@ -191,19 +192,29 @@ const app = {
         // Xử lý random bật tắt 
         randomBtn.onclick = function() {
             _this.isRandom = !_this.isRandom 
-            randomBtn.classList.toggle('active', _this.isRandom); // thêm class active
+            randomBtn.classList.toggle('active', _this.isRandom); // thêm class active nếu điều kiện đúng, this.isRandom
         }
 
         // Xử lý next song khi audio ended
         audio.onended = function() {
-            nextBtn.click();
+            if (_this.isRepeat) {
+                _this.loadCurrentSong();
+                audio.play();
+            } else {
+                nextBtn.click();
+            }
         } 
 
 
         // Xử lý khi phát lại bài hát
         repeatBtn.onclick = function() {
-            _this.repeatSong();
-            audio.play();
+            _this.isRepeat = !_this.isRepeat 
+            repeatBtn.classList.toggle('active', _this.isRepeat)
+            if (_this.isRepeat && _this.isRandom) {
+                randomBtn.classList.remove('active');
+                _this.loadCurrentSong();
+                audio.play();
+            }
         }
 
         // lắng nghe sự kiện khi click vào playlist
@@ -217,9 +228,7 @@ const app = {
                     _this.render();
                     audio.play();
                 }
-                
             }
-            
         }
     },   
 
@@ -262,10 +271,6 @@ const app = {
         
         this.currentIndex = newIndex;
         this.loadCurrentSong(); 
-    },
-
-    repeatSong: function() {
-        this.loadCurrentSong();
     },
     
     scrollToActiveSong: function() { // trượt lên tầm nhìn được
