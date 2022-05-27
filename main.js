@@ -78,6 +78,8 @@ const repeatBtn = document.querySelector('.btn-repeat');
 
 const progress = document.querySelector('#progress');
 
+const playlist = document.querySelector('.playlist');
+
 
 const app = {
     currentIndex: 0,
@@ -87,7 +89,7 @@ const app = {
     render: function() { // 1. Render song
         const htmls = this.songs.map((song, index) => {
             return ` 
-                <div class="song ${index === this.currentIndex ? 'active' : ''}">
+                <div class="song ${index === this.currentIndex ? 'active' : ''}" data-index="${index}">
                     <div class="thumb" style="background-image: url('${song.image}')">
                     </div>
                     <div class="body">
@@ -203,6 +205,22 @@ const app = {
             _this.repeatSong();
             audio.play();
         }
+
+        // lắng nghe sự kiện khi click vào playlist
+        playlist.onclick = function(e) {
+            const songNode = e.target.closest('.song:not(.active)');
+            if(songNode || e.target.closest('.option')) { // không click vào bài đang hoạt động hoặc nút option...
+                // Xử lý khi click vào song, get index bài hiện tại 
+                if (songNode) {
+                    _this.currentIndex = Number(songNode.dataset.index);
+                    _this.loadCurrentSong();
+                    _this.render();
+                    audio.play();
+                }
+                
+            }
+            
+        }
     },   
 
     // tìm vị trí current song
@@ -250,10 +268,10 @@ const app = {
         this.loadCurrentSong();
     },
     
-    scrollToActiveSong: function() {
+    scrollToActiveSong: function() { // trượt lên tầm nhìn được
         setTimeout(() => {
             const songActive = document.querySelector('.song.active')
-            if (this.currentIndex === 0 || 1) {
+            if (this.currentIndex === 0) {
                 songActive.scrollIntoView({
                     behavior: "smooth", 
                     block: "center", 
